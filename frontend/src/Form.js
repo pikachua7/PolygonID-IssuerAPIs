@@ -39,8 +39,50 @@ function Form({ fieldInfo, passBackResults }) {
     }
 
     return (
+        <form
+            onSubmit={handleSubmit(passBackResults)}
+            onChange={() => {
+                const resultsAreValid = Object.values(getValues()).every(
+                    (i) => typeof i === 'string' && i.length > 0
+                )
+                setCanSubmitForm(resultsAreValid)
+            }}
+        >
+            <FormControl>
+                {fieldInfo.map((field) => {
+                    const { name, type, description } = field
+                    return (
+                        <Box key={name} m={4}>
+                            <FormInfoLabel name={name} info={description} />
 
-        <h1>Form</h1>
+                            {type === 'number' && (
+                                <Input
+                                    id={name}
+                                    type="number"
+                                    placeholder={name}
+                                    {...register(name, {
+                                        required: 'This is required',
+                                    })}
+                                />
+                            )}
+
+                        </Box>
+                    )
+                })}
+            </FormControl>
+            <Box m={4}>
+                <Button
+                    w="100%"
+                    mt={4}
+                    colorScheme="teal"
+                    isLoading={isSubmitting}
+                    type="submit"
+                    disabled={!canSubmitForm}
+                >
+                    Claim <ExternalLinkIcon m={2} />
+                </Button>
+            </Box>
+        </form>
     )
 }
 
